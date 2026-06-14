@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CS2 Skin Investment Tracker — Howl Edition. Live market prices, profitable trade-ups, and portfolio tracking powered by real-time API data.">
+    <meta name="keywords" content="CS2, Counter-Strike 2, skin investment, trade-up, steam market, howl, skin tracker, ROI, live prices">
+    <meta name="author" content="CS2 Howl Tracker">
+    <title>CS2 Howl Tracker — Live Skin Investments & Trade-Ups</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════ LOADING SCREEN ═══════════════════════════════════════ -->
+    <div class="loading-screen" id="loadingScreen">
+        <!-- Fire Particles -->
+        <div class="fire-particles">
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+            <div class="fire-particle"></div>
+        </div>
+
+        <!-- 3D Spinning AK-47 -->
+        <div class="loading-gun-container">
+            <div class="loading-ring"></div>
+            <div class="loading-gun">
+                <svg viewBox="0 0 200 120" width="260" height="160" class="ak47-svg">
+                    <!-- AK-47 Case Hardened silhouette in SVG -->
+                    <defs>
+                        <linearGradient id="caseHardenedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4a90d9;stop-opacity:1" />
+                            <stop offset="25%" style="stop-color:#c0a030;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#3a7bc8;stop-opacity:1" />
+                            <stop offset="75%" style="stop-color:#d4a840;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#5a6fd9;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="woodGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#8B6914;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#5C4A1A;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <!-- Barrel -->
+                    <rect x="80" y="42" width="120" height="6" rx="1" fill="url(#caseHardenedGrad)" filter="url(#glow)"/>
+                    <!-- Gas tube -->
+                    <rect x="95" y="36" width="95" height="4" rx="1" fill="url(#caseHardenedGrad)" opacity="0.8"/>
+                    <!-- Front sight -->
+                    <rect x="195" y="34" width="4" height="14" rx="1" fill="url(#caseHardenedGrad)"/>
+                    <!-- Receiver body -->
+                    <rect x="40" y="44" width="80" height="18" rx="3" fill="url(#caseHardenedGrad)" filter="url(#glow)"/>
+                    <!-- Magazine -->
+                    <path d="M55,62 L50,95 L65,95 L70,62 Z" fill="url(#caseHardenedGrad)" opacity="0.9"/>
+                    <!-- Trigger guard -->
+                    <path d="M70,60 Q70,75 80,75 L85,75 Q90,75 90,60" fill="none" stroke="url(#caseHardenedGrad)" stroke-width="2.5"/>
+                    <!-- Stock -->
+                    <path d="M40,48 L5,60 L5,68 L15,68 L40,60 Z" fill="url(#woodGrad)" filter="url(#glow)"/>
+                    <!-- Pistol grip -->
+                    <path d="M45,62 L38,90 L50,90 L52,62 Z" fill="url(#woodGrad)"/>
+                    <!-- Rear sight -->
+                    <rect x="100" y="38" width="3" height="8" rx="1" fill="url(#caseHardenedGrad)" opacity="0.7"/>
+                    <!-- Dust cover details -->
+                    <line x1="45" y1="50" x2="115" y2="50" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+                    <line x1="45" y1="53" x2="115" y2="53" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="loading-text">CS2 HOWL TRACKER</div>
+        <div class="loading-subtitle">Fetching Live Market Data...</div>
+        <div class="loading-bar">
+            <div class="loading-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ NAVIGATION ═══════════════════════════════════════ -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="nav-logo">🔥</div>
+                <div class="brand-text">
+                    <span class="brand-name">HOWL TRACKER</span>
+                    <span class="brand-tag">Live Skin Intelligence</span>
+                </div>
+            </div>
+
+            <div class="nav-links" id="navLinks">
+                <button class="nav-link active" data-page="dashboard">📊 Dashboard</button>
+                <button class="nav-link" data-page="investments">💰 Investments</button>
+                <button class="nav-link" data-page="tradeups">🔄 Trade-Ups</button>
+                <button class="nav-link" data-page="market">📈 Market</button>
+                <button class="nav-link" data-page="portfolio">📁 Portfolio</button>
+            </div>
+
+            <div class="nav-actions">
+                <div class="api-status connecting" id="apiStatus">
+                    <span class="api-dot"></span>
+                    <span class="api-text">Connecting...</span>
+                </div>
+                <div class="nav-search">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search skins...">
+                </div>
+                <button class="nav-toggle" id="navToggle">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════ DASHBOARD PAGE ═══════════════════════════════════════ -->
+    <main class="page active" data-page="dashboard">
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Smart CS2 Skin <span class="text-howl">Investments</span></h1>
+            <p class="hero-subtitle">Real-time market analysis powered by live API data. Find the best skins to invest in, discover profitable trade-ups, and track your portfolio.</p>
+            <div style="display: flex; justify-content: center; gap: 1rem; align-items: center; margin-top: 1rem;">
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span>Live Prices</span>
+                </div>
+                <span class="api-status connected" id="lastUpdate" style="font-size: 0.7rem; color: var(--text-muted);">Fetching prices...</span>
+            </div>
+        </section>
+
+        <!-- Stats Row -->
+        <section class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" id="totalTracked">0</div>
+                <div class="stat-label">Skins Tracked</div>
+                <div class="stat-change positive">Live Data</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-value" id="avgRoi">0%</div>
+                <div class="stat-label">Avg. Predicted ROI</div>
+                <div class="stat-change positive">▲ 1 Year</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="bestPick">—</div>
+                <div class="stat-label">Best Pick</div>
+                <div class="stat-change positive">Highest ROI</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💎</div>
+                <div class="stat-value" id="marketCap">$0</div>
+                <div class="stat-label">Tracked Volume</div>
+                <div class="stat-change positive">Monthly</div>
+            </div>
+        </section>
+
+        <!-- Top Investments Preview -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title"><span class="dot"></span>Top Investment Picks</h2>
+                <button class="btn-secondary" onclick="navigateTo('investments')">View All →</button>
+            </div>
+            <div class="investment-grid" id="dashboardGrid">
+                <!-- Filled by JS — top 6 skins -->
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section style="margin-top: 3rem;">
+            <div class="section-header">
+                <h2 class="section-title"><span class="dot"></span>Price Trends</h2>
+            </div>
+            <div class="chart-container">
+                <div class="chart-header">
+                    <span class="chart-title">Historical Price Movement — Top 5 Picks</span>
+                    <div class="chart-tabs">
+                        <button class="chart-tab active" data-period="9m">9M</button>
+                        <button class="chart-tab" data-period="6m">6M</button>
+                        <button class="chart-tab" data-period="3m">3M</button>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="priceChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Trade-Ups Preview -->
+        <section style="margin-top: 2rem;">
+            <div class="section-header">
+                <h2 class="section-title"><span class="dot"></span>Best Trade-Up Deals</h2>
+                <button class="btn-secondary" onclick="navigateTo('tradeups')">View All →</button>
+            </div>
+            <div id="dashboardTradeups">
+                <!-- Filled by JS — top 3 trade-ups -->
+            </div>
+        </section>
+    </main>
+
+    <!-- ═══════════════════════════════════════ INVESTMENTS PAGE ═══════════════════════════════════════ -->
+    <main class="page" data-page="investments">
+
+        <section class="hero">
+            <h1>Skin <span class="text-howl">Investments</span></h1>
+            <p class="hero-subtitle">Curated picks with the best predicted ROI. Live prices updated via Steam Market API.</p>
+        </section>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="filter-group">
+                <span class="filter-label">Weapon</span>
+                <select class="filter-select" id="weaponFilter">
+                    <option value="all">All Weapons</option>
+                    <option value="AK-47">AK-47</option>
+                    <option value="AWP">AWP</option>
+                    <option value="M4A4">M4A4</option>
+                    <option value="M4A1-S">M4A1-S</option>
+                    <option value="USP-S">USP-S</option>
+                    <option value="Glock-18">Glock-18</option>
+                    <option value="Desert Eagle">Desert Eagle</option>
+                    <option value="P250">P250</option>
+                    <option value="P90">P90</option>
+                    <option value="FAMAS">FAMAS</option>
+                    <option value="MAC-10">MAC-10</option>
+                    <option value="Five-SeveN">Five-SeveN</option>
+                    <option value="SG 553">SG 553</option>
+                    <option value="MP9">MP9</option>
+                    <option value="Nova">Nova</option>
+                    <option value="Galil AR">Galil AR</option>
+                    <option value="SSG 08">SSG 08</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Rarity</span>
+                <select class="filter-select" id="rarityFilter">
+                    <option value="all">All Rarities</option>
+                    <option value="consumer">Consumer</option>
+                    <option value="industrial">Industrial</option>
+                    <option value="milspec">Mil-Spec</option>
+                    <option value="restricted">Restricted</option>
+                    <option value="classified">Classified</option>
+                    <option value="covert">Covert</option>
+                    <option value="contraband">Contraband</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Price</span>
+                <select class="filter-select" id="priceFilter">
+                    <option value="all">All Prices</option>
+                    <option value="under1">Under $1</option>
+                    <option value="under5">Under $5</option>
+                    <option value="under10">Under $10</option>
+                    <option value="under25">Under $25</option>
+                    <option value="over25">$25+</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Sort By</span>
+                <select class="filter-select" id="sortFilter">
+                    <option value="roi-desc">ROI (High → Low)</option>
+                    <option value="roi-asc">ROI (Low → High)</option>
+                    <option value="price-asc">Price (Low → High)</option>
+                    <option value="price-desc">Price (High → Low)</option>
+                    <option value="confidence-desc">Confidence (High → Low)</option>
+                    <option value="volume-desc">Volume (High → Low)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Investment Grid -->
+        <div class="investment-grid" id="investmentGrid">
+            <!-- Filled by JS -->
+        </div>
+    </main>
+
+    <!-- ═══════════════════════════════════════ TRADE-UPS PAGE ═══════════════════════════════════════ -->
+    <main class="page" data-page="tradeups">
+
+        <section class="hero">
+            <h1>Profitable <span class="text-howl">Trade-Ups</span></h1>
+            <p class="hero-subtitle">Best trade-up contracts ranked by expected profit. Filter by budget to find deals.</p>
+        </section>
+
+        <!-- Trade-Up Filter Buttons -->
+        <div class="filters-bar" style="justify-content: center;">
+            <button class="filter-btn tradeup-filter-btn active" data-filter="all">🔄 All Trade-Ups</button>
+            <button class="filter-btn tradeup-filter-btn" data-filter="under1">💚 Under $1</button>
+            <button class="filter-btn tradeup-filter-btn" data-filter="under5">💛 Under $5</button>
+        </div>
+
+        <!-- Trade-Up Cards -->
+        <div class="tradeup-section" id="tradeupContainer">
+            <!-- Filled by JS -->
+        </div>
+    </main>
+
+    <!-- ═══════════════════════════════════════ MARKET PAGE ═══════════════════════════════════════ -->
+    <main class="page" data-page="market">
+
+        <section class="hero">
+            <h1>Market <span class="text-howl">Analysis</span></h1>
+            <p class="hero-subtitle">Comprehensive market overview with live price data from Steam Market.</p>
+        </section>
+
+        <!-- ROI Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <span class="chart-title">ROI Comparison — Top Skins</span>
+            </div>
+            <div class="chart-canvas-wrapper">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Market Table -->
+        <section style="margin-top: 2rem;">
+            <div class="section-header">
+                <h2 class="section-title"><span class="dot"></span>All Tracked Skins — Live Prices</h2>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Skin</th>
+                            <th>Current Price</th>
+                            <th>Predicted (1yr)</th>
+                            <th>ROI</th>
+                            <th>Volume</th>
+                            <th>Trend</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody id="marketTableBody">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- ═══════════════════════════════════════ PORTFOLIO PAGE ═══════════════════════════════════════ -->
+    <main class="page" data-page="portfolio">
+
+        <section class="hero">
+            <h1>Your <span class="text-howl">Portfolio</span></h1>
+            <p class="hero-subtitle">Track your skin investments with real-time P&L powered by live market data.</p>
+        </section>
+
+        <!-- Portfolio Summary Cards -->
+        <div class="portfolio-summary">
+            <div class="portfolio-card">
+                <div class="portfolio-label">Total Value</div>
+                <div class="portfolio-value" id="portfolioTotal">$0.00</div>
+                <div class="portfolio-change positive" id="portfolioTotalChange">Add skins to start</div>
+            </div>
+            <div class="portfolio-card">
+                <div class="portfolio-label">Total Profit / Loss</div>
+                <div class="portfolio-value" id="portfolioProfit" style="color: var(--accent-green);">$0.00</div>
+                <div class="portfolio-change" id="portfolioProfitPercent">—</div>
+            </div>
+            <div class="portfolio-card">
+                <div class="portfolio-label">Items Tracked</div>
+                <div class="portfolio-value" id="portfolioItems">0</div>
+                <div class="portfolio-change positive">Active</div>
+            </div>
+        </div>
+
+        <!-- Add Skin Button -->
+        <div style="margin-bottom: 2rem; text-align: right;">
+            <button class="btn-primary" id="addToPortfolioBtn">+ Add Skin to Portfolio</button>
+        </div>
+
+        <!-- Portfolio Table -->
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Skin</th>
+                        <th>Qty</th>
+                        <th>Buy Price</th>
+                        <th>Current Price</th>
+                        <th>P&L</th>
+                        <th>P&L %</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="portfolioTable">
+                    <!-- Filled by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="portfolioEmpty">
+            <div class="empty-icon">📦</div>
+            <div class="empty-title">No Skins in Portfolio</div>
+            <div class="empty-text">Click "Add Skin to Portfolio" to start tracking your investments.</div>
+        </div>
+    </main>
+
+    <!-- ═══════════════════════════════════════ ADD SKIN MODAL ═══════════════════════════════════════ -->
+    <div class="modal-overlay" id="addSkinModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Add Skin to Portfolio</span>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <form id="addSkinForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="modalSkinSelect">Select Skin</label>
+                        <select class="form-input" id="modalSkinSelect" required>
+                            <!-- Filled by JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modalQuantity">Quantity</label>
+                        <input class="form-input" type="number" id="modalQuantity" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modalBuyPrice">Buy Price ($)</label>
+                        <input class="form-input" type="number" id="modalBuyPrice" step="0.01" min="0.01" placeholder="e.g. 8.50" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="modalCancelBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Add to Portfolio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ FOOTER ═══════════════════════════════════════ -->
+    <footer class="footer">
+        <p class="footer-text">🔥 CS2 Howl Investment Tracker — Live market data from csgotrader.app API. Not financial advice.</p>
+        <div class="footer-links">
+            <a href="#" class="footer-link">GitHub</a>
+            <a href="https://steamcommunity.com/market/" class="footer-link" target="_blank">Steam Market</a>
+            <a href="#" class="footer-link">About</a>
+        </div>
+    </footer>
+
+    <!-- Application Script -->
+    <script src="script.js"></script>
+</body>
+</html>
